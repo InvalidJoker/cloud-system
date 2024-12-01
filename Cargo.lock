@@ -3,6 +3,10 @@
 version = 3
 
 [[package]]
+name = "adapter-api"
+version = "0.1.0"
+
+[[package]]
 name = "addr2line"
 version = "0.24.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -68,15 +72,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
-name = "core"
+name = "docker-adapter"
 version = "0.1.0"
-dependencies = [
- "async-trait",
- "futures",
- "libloading",
- "plugin_api",
- "tokio",
-]
 
 [[package]]
 name = "futures"
@@ -200,6 +197,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "manager"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+ "futures",
+ "libloading",
+ "plugin_api",
+ "tokio",
+]
+
+[[package]]
 name = "memchr"
 version = "2.7.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -224,6 +232,10 @@ dependencies = [
  "wasi",
  "windows-sys",
 ]
+
+[[package]]
+name = "node"
+version = "0.1.0"
 
 [[package]]
 name = "object"

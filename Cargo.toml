@@ -1,5 +1,5 @@
 [workspace]
-members = ["core", "test-plugin", "plugin-api"]
+members = ["core/manager", "plugins/test-plugin", "plugin-api", "core/node", "adapters/docker-adapter", "adapter-api"]
 resolver = "2"
 
 [workspace.dependencies]
