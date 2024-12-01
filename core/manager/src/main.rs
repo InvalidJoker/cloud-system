@@ -8,32 +8,26 @@ mod config;
 
 pub struct PluginManager {
     plugins: Vec<Arc<dyn Plugin>>,
-    _libraries: Vec<Library>,
 }
 
 impl PluginManager {
     pub fn new() -> Self {
         Self {
             plugins: Vec::new(),
-            _libraries: Vec::new(),
         }
     }
 
     pub fn load_plugin(&mut self, path: &str) -> Result<(), Box<dyn std::error::Error>> {
-        unsafe {
-            let lib = Library::new(path)?;
-            let create_plugin: Symbol<unsafe extern "C" fn() -> *mut dyn Plugin> =
-                lib.get(b"create_plugin")?;
+        let lib = unsafe { Library::new(path)? };
 
-            // Create the plugin instance
-            let plugin = Arc::from_raw(create_plugin());
+        let create_plugin: Symbol<extern "Rust" fn() -> Box<dyn Plugin>> =
+            unsafe { lib.get(b"create_plugin")? };
 
-            // Add plugin and keep the library alive
-            self.plugins.push(plugin);
-            self._libraries.push(lib);
+        let plugin = create_plugin();
 
-            Ok(())
-        }
+        self.plugins.push(Arc::from(plugin));
+
+        Ok(())
     }
 
     pub async fn execute_all(&self, input: &str) -> Vec<String> {

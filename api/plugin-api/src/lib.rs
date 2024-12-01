@@ -9,7 +9,7 @@ pub trait Plugin: Send + Sync {
 macro_rules! register_plugin {
     ($plugin_type:ty) => {
         #[no_mangle]
-        pub extern "C" fn create_plugin() -> Box<dyn $crate::Plugin> {
+        pub extern "Rust" fn create_plugin() -> Box<dyn $crate::Plugin> {
             Box::new(<$plugin_type>::new())
         }
     };
