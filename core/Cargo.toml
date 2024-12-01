@@ -1,0 +1,11 @@
+[package]
+name = "core"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+plugin_api.workspace = true
+libloading = "0.8"
+tokio.workspace = true
+async-trait.workspace = true
+futures.workspace = true

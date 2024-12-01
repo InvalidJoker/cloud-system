@@ -1,0 +1,15 @@
+[workspace]
+members = ["core", "test-plugin", "plugin-api"]
+resolver = "2"
+
+[workspace.dependencies]
+libc = "0.2"
+async-trait = "0.1.83"
+futures = "0.3"
+
+[workspace.dependencies.plugin_api]
+path = "plugin-api"
+
+[workspace.dependencies.tokio]
+version = "1.41.1"
+features = ["full"]
