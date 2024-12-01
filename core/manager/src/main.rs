@@ -1,4 +1,8 @@
-use api::{context::Context, event::EventManager, plugin::Plugin};
+use api::{
+    context::Context,
+    event::{EventManager, FullEvent},
+    plugin::Plugin,
+};
 use config::ManagerConfig;
 use libloading::{Library, Symbol};
 use std::sync::Arc;
@@ -8,6 +12,12 @@ mod config;
 
 pub struct PluginManager {
     plugins: Vec<Arc<dyn Plugin>>,
+}
+
+impl Default for PluginManager {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl PluginManager {
@@ -77,7 +87,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("{}", event_manager.handlers.len());
 
     let ctx = Context::new();
-    event_manager.dispatch(api::event::FullEvent::Test { message: "Hello".to_string() }, ctx).await;
+    event_manager
+        .dispatch(
+            FullEvent::Test {
+                message: "Hello".to_string(),
+            },
+            ctx,
+        )
+        .await;
 
     println!("{}", name);
 

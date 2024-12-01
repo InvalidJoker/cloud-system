@@ -90,6 +90,12 @@ pub struct EventManager {
     pub handlers: Vec<Arc<dyn EventHandler>>,
 }
 
+impl Default for EventManager {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl EventManager {
     pub fn new() -> Self {
         Self {

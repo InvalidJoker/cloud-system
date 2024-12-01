@@ -18,7 +18,7 @@ struct Handler;
 
 #[async_trait]
 impl EventHandler for Handler {
-    async fn test_event(&self, ctx: Context, message: String) {
+    async fn test_event(&self, _ctx: Context, message: String) {
         println!("Received Test Event: {}", message);
     }
 }
