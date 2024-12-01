@@ -2,9 +2,8 @@
 members = [
     "core/manager",
     "plugins/test-plugin",
-    "api/plugin-api",
     "adapters/docker-adapter",
-    "api/adapter-api",
+    "api",
 ]
 resolver = "2"
 
@@ -14,12 +13,8 @@ async-trait = "0.1.83"
 futures = "0.3"
 toml = "0.8.19"
 
-[workspace.dependencies.plugin_api]
-path = "api/plugin-api"
-
-[workspace.dependencies.adapter_api]
-path = "api/adapter-api"
-
+[workspace.dependencies.api]
+path = "api"
 
 [workspace.dependencies.serde]
 version = "1.0"

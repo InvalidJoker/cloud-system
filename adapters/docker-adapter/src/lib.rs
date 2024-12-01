@@ -1,4 +1,4 @@
-use adapter_api::{register_adapter, Adapter};
+use api::{adapter::Adapter, register_adapter};
 use async_trait::async_trait;
 
 struct DockerAdapter;

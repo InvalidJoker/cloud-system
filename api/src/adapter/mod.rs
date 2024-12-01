@@ -9,7 +9,7 @@ pub trait Adapter: Send + Sync {
 macro_rules! register_adapter {
     ($adapter_type:ty) => {
         #[no_mangle]
-        pub extern "C" fn create_adapter() -> Box<dyn $crate::Adapter> {
+        pub extern "C" fn create_adapter() -> Box<dyn Adapter> {
             Box::new(<$adapter_type>::new())
         }
     };

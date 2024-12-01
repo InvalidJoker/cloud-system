@@ -1,5 +1,10 @@
+use api::{
+    context::Context,
+    event::{EventHandler, EventManager},
+    plugin::Plugin,
+    register_plugin,
+};
 use async_trait::async_trait;
-use plugin_api::{register_plugin, Plugin};
 
 struct ExamplePlugin;
 
@@ -9,15 +14,25 @@ impl ExamplePlugin {
     }
 }
 
+struct Handler;
+
+#[async_trait]
+impl EventHandler for Handler {
+    async fn test_event(&self, ctx: Context, message: String) {
+        println!("Received Test Event: {}", message);
+    }
+}
+
 #[async_trait]
 impl Plugin for ExamplePlugin {
     async fn name(&self) -> String {
         "Example Plugin".to_string()
     }
 
-    async fn execute(&self, input: &str) -> String {
-        format!("Processed: {}", input)
+    async fn startup(&self, manager: &mut EventManager) {
+        manager.event_handler(Handler);
+
+        println!("Starting up Example Plugin");
     }
 }
-
 register_plugin!(ExamplePlugin);

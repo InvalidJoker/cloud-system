@@ -1,6 +1,6 @@
+use api::{context::Context, event::EventManager, plugin::Plugin};
 use config::ManagerConfig;
 use libloading::{Library, Symbol};
-use plugin_api::Plugin;
 use std::sync::Arc;
 use tokio::fs::File;
 
@@ -28,14 +28,6 @@ impl PluginManager {
         self.plugins.push(Arc::from(plugin));
 
         Ok(())
-    }
-
-    pub async fn execute_all(&self, input: &str) -> Vec<String> {
-        let mut results = Vec::new();
-        for plugin in &self.plugins {
-            results.push(plugin.execute(input).await);
-        }
-        results
     }
 
     pub fn load_from_directory(&mut self, path: &str) -> Result<(), Box<dyn std::error::Error>> {
@@ -74,13 +66,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("{}", manager.plugins.len());
 
-    let name = manager.plugins[0].name().await;
-    println!("{}", name);
+    let mut event_manager = EventManager::new();
 
-    let results = manager.execute_all("Hello, Rust!").await;
-    for result in results {
-        println!("{}", result);
+    let name = manager.plugins[0].name().await;
+
+    for plugin in &manager.plugins {
+        plugin.startup(&mut event_manager).await;
     }
+
+    println!("{}", event_manager.handlers.len());
+
+    let ctx = Context::new();
+    event_manager.dispatch(api::event::FullEvent::Test { message: "Hello".to_string() }, ctx).await;
+
+    println!("{}", name);
 
     Ok(())
 }
