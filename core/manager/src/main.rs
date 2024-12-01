@@ -18,12 +18,12 @@ impl PluginManager {
     }
 
     pub fn load_plugin(&mut self, path: &str) -> Result<(), Box<dyn std::error::Error>> {
-        let lib = unsafe { Library::new(path)? };
+        let lib = Box::leak(Box::new(unsafe { Library::new(path)? }));
 
-        let create_plugin: Symbol<extern "Rust" fn() -> Box<dyn Plugin>> =
+        let create_plugin: Symbol<extern "C" fn() -> Box<dyn Plugin>> =
             unsafe { lib.get(b"create_plugin")? };
 
-        let plugin = create_plugin();
+        let plugin: Box<dyn Plugin> = create_plugin();
 
         self.plugins.push(Arc::from(plugin));
 
@@ -36,6 +36,25 @@ impl PluginManager {
             results.push(plugin.execute(input).await);
         }
         results
+    }
+
+    pub fn load_from_directory(&mut self, path: &str) -> Result<(), Box<dyn std::error::Error>> {
+        let dir = std::fs::read_dir(path)?;
+
+        for entry in dir {
+            let entry = entry?;
+
+            if !entry.file_type()?.is_file() {
+                continue;
+            }
+
+            let path = entry.path();
+            let path = path.to_str().unwrap();
+
+            self.load_plugin(path)?;
+        }
+
+        Ok(())
     }
 }
 
@@ -51,7 +70,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("{:?}", config);
 
-    manager.load_plugin("test_plugin.dll")?;
+    manager.load_from_directory("./data")?;
 
     println!("{}", manager.plugins.len());
 
