@@ -1,12 +1,8 @@
 [package]
-name = "docker-adapter"
+name = "adapter_api"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-adapter_api.workspace = true
 tokio.workspace = true
 async-trait.workspace = true
-
-[lib]
-crate-type = ["cdylib"]

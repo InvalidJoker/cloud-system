@@ -10,3 +10,12 @@
 
 - Setup the manager on your main server.
 - If you want the manager to be a node as well, you can do that in the setup.
+
+## Plugins
+
+- Rest Plugin
+
+## Adapters
+
+- Docker
+- Local (like on the traditional cloud systems)

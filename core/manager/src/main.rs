@@ -1,6 +1,10 @@
+use config::ManagerConfig;
 use libloading::{Library, Symbol};
 use plugin_api::Plugin;
 use std::sync::Arc;
+use tokio::fs::File;
+
+mod config;
 
 pub struct PluginManager {
     plugins: Vec<Arc<dyn Plugin>>,
@@ -44,6 +48,14 @@ impl PluginManager {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut manager = PluginManager::new();
+
+    let mut config_buffer = String::new();
+
+    let mut file = File::open("config.toml").await?;
+    tokio::io::AsyncReadExt::read_to_string(&mut file, &mut config_buffer).await?;
+    let config: ManagerConfig = toml::from_str(&config_buffer)?;
+
+    println!("{:?}", config);
 
     manager.load_plugin("test_plugin.dll")?;
 

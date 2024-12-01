@@ -1,14 +1,34 @@
 [workspace]
-members = ["core/manager", "plugins/test-plugin", "plugin-api", "core/node", "adapters/docker-adapter", "adapter-api"]
+members = [
+    "core/manager",
+    "plugins/test-plugin",
+    "api/plugin-api",
+    "core/node",
+    "adapters/docker-adapter",
+    "api/adapter-api",
+]
 resolver = "2"
 
 [workspace.dependencies]
 libc = "0.2"
 async-trait = "0.1.83"
 futures = "0.3"
+toml = "0.8.19"
 
 [workspace.dependencies.plugin_api]
-path = "plugin-api"
+path = "api/plugin-api"
+
+[workspace.dependencies.adapter_api]
+path = "api/adapter-api"
+
+
+[workspace.dependencies.serde]
+version = "1.0"
+features = ["derive"]
+
+[workspace.dependencies.serde_json]
+version = "1.0"
+features = ["preserve_order"]
 
 [workspace.dependencies.tokio]
 version = "1.41.1"
