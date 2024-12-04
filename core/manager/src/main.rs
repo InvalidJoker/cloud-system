@@ -1,64 +1,13 @@
 use api::{
     context::Context,
     event::{EventManager, FullEvent},
-    plugin::Plugin,
 };
 use config::ManagerConfig;
-use libloading::{Library, Symbol};
-use std::sync::Arc;
+use plugins::PluginManager;
 use tokio::fs::File;
 
 mod config;
-
-pub struct PluginManager {
-    plugins: Vec<Arc<dyn Plugin>>,
-}
-
-impl Default for PluginManager {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-impl PluginManager {
-    pub fn new() -> Self {
-        Self {
-            plugins: Vec::new(),
-        }
-    }
-
-    pub fn load_plugin(&mut self, path: &str) -> Result<(), Box<dyn std::error::Error>> {
-        let lib = Box::leak(Box::new(unsafe { Library::new(path)? }));
-
-        let create_plugin: Symbol<extern "C" fn() -> Box<dyn Plugin>> =
-            unsafe { lib.get(b"create_plugin")? };
-
-        let plugin: Box<dyn Plugin> = create_plugin();
-
-        self.plugins.push(Arc::from(plugin));
-
-        Ok(())
-    }
-
-    pub fn load_from_directory(&mut self, path: &str) -> Result<(), Box<dyn std::error::Error>> {
-        let dir = std::fs::read_dir(path)?;
-
-        for entry in dir {
-            let entry = entry?;
-
-            if !entry.file_type()?.is_file() {
-                continue;
-            }
-
-            let path = entry.path();
-            let path = path.to_str().unwrap();
-
-            self.load_plugin(path)?;
-        }
-
-        Ok(())
-    }
-}
+mod plugins;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
